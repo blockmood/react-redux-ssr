@@ -6,7 +6,7 @@ yarn install
 ```
 
 ```
-yarn start
+yarn start  http://localhost:8081
 ```
 
 ```
@@ -14,5 +14,5 @@ yarn build
 ```
 
 ```
-yarn server
+yarn server http://localhost:8888
 ```
