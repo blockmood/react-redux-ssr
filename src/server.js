@@ -19,11 +19,32 @@ app.get( "/*",(req,res)=>{
     const context = {}
     const {store} = configureStore(req.url)
     const matchedRoutes = matchRoutes(routes, req.path)
-    let type;
+    let arr = []
     matchedRoutes.forEach(v => {
         if(v.route.loadData){
-            type =  v.route.loadData(store)
+            let promise = new Promise((resolve,reject)=>{
+                let data = v.route.loadData(store) 
+                'type' in data ? resolve(data) : reject('error')
+            })
+            arr.push(promise)
         }
+    })
+
+    Promise.all(arr).then(response => {
+        store.runSaga(sagas).done.then(()=>{
+            const reduxState = store.getState();
+            const reactDom = ReactDom.renderToString(jsx)
+            let template = fs.readFileSync(path.resolve( __dirname, "../dist/template.html" ),"utf-8").replace('<div id="root"></div>', `<div id="root">${reactDom}<script>window.REDUX_DATA = ${ JSON.stringify( reduxState ) }</script></div>`);
+            res.writeHead( 200, { "Content-Type": "text/html" } );
+            res.end(template)
+        })
+
+        response.length > 0 ? store.dispatch(response[0]) : store.dispatch({type:'INITIALISE_APP'});
+
+        store.close();
+    }).catch(error => {
+        //rediection 404 ...
+        console.log('error')
     })
     
     const jsx = (
@@ -34,16 +55,6 @@ app.get( "/*",(req,res)=>{
         </Provider>
     )
 
-    store.runSaga(sagas).done.then(()=>{
-        const reduxState = store.getState();
-        const reactDom = ReactDom.renderToString(jsx)
-        let template = fs.readFileSync(path.resolve( __dirname, "../dist/template.html" ),"utf-8").replace('<div id="root"></div>', `<div id="root">${reactDom}<script>window.REDUX_DATA = ${ JSON.stringify( reduxState ) }</script></div>`);
-        res.writeHead( 200, { "Content-Type": "text/html" } );
-        res.end(template)
-    })
-
-    type ? store.dispatch(type) : store.dispatch({type:'INITIALISE_APP'});
-    store.close();
 })
 
 app.listen( 8888,()=>{
