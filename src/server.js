@@ -7,6 +7,8 @@ import ReactDom from "react-dom/server";
 import { Provider } from "react-redux";
 import { StaticRouter } from "react-router-dom";
 import { configureStore } from './store'
+import routes from './routes'
+import { matchRoutes,renderRoutes } from "react-router-config";
 import sagas from "./saga/index";
 const app = express();
 
@@ -16,14 +18,22 @@ app.use( express.static( path.resolve( __dirname, "../" ) ) );
 app.get( "/*",(req,res)=>{
     const context = {}
     const {store} = configureStore(req.url)
-    store.dispatch({type:'INITIALISE_APP'});
+    const matchedRoutes = matchRoutes(routes, req.path)
+    let type;
+    matchedRoutes.forEach(v => {
+        if(v.route.loadData){
+            type =  v.route.loadData(store)
+        }
+    })
+    
     const jsx = (
         <Provider store={store}>
             <StaticRouter context={ context } location={ req.url }>
-                <App />
+                {renderRoutes(routes)}
             </StaticRouter>
         </Provider>
     )
+
     store.runSaga(sagas).done.then(()=>{
         const reduxState = store.getState();
         const reactDom = ReactDom.renderToString(jsx)
@@ -32,10 +42,7 @@ app.get( "/*",(req,res)=>{
         res.end(template)
     })
 
-    if(req.url === '/about'){
-        store.dispatch( {type:'REQUEST'} );
-    }
-
+    type ? store.dispatch(type) : store.dispatch({type:'INITIALISE_APP'});
     store.close();
 })
 

@@ -1,9 +1,6 @@
 import React from 'react'
 import { Link, Switch, Route } from "react-router-dom";
-
-import Home from './Home'
-import About from './About'
-import StatusRoute  from './StatusRoute'
+import { renderRoutes } from 'react-router-config'
 
 class Layout extends React.Component{
     constructor() {
@@ -19,16 +16,9 @@ class Layout extends React.Component{
                     <ol>
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/about">About</Link></li>
+                        <li><Link to="/list">List</Link></li>
                     </ol>
-                    <Switch>
-                        <Route path="/" exact component={ Home } />
-                        <Route path="/about" exact component={ About } />
-                        <StatusRoute code={404}>
-                            <div>
-                                Not Found
-                            </div>
-                        </StatusRoute>
-                    </Switch>
+                    { renderRoutes(this.props.route.routes) }
             </div>
         );
     }

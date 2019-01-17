@@ -1,8 +1,8 @@
 import React from 'react'
 import Layout from './components/Layout'
 import './index.css'
- export default () => (
+ export default ({routes}) => (
      <div>
-            <Layout />
+        <Layout route={routes} />
      </div>
  )

@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {fetchGists} from '../saga/gists'
 class About extends React.Component{
     constructor(){
         super(...arguments)
@@ -31,7 +32,6 @@ class About extends React.Component{
 
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         list:state.store.gists
     }
@@ -41,6 +41,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getList:()=>{dispatch({type:'REQUEST'})}
     }
+}
+
+About.loadData = store => {
+    return store.dispatch({type:'REQUEST'})
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(About)

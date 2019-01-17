@@ -6,6 +6,12 @@ export default (state = [] , action) => {
                 gists:action.payload.gists
             }
         }
+        case 'SUCCESS_CAT':{
+            return {
+                ...state,
+                catList:action.payload.cateList
+            }
+        }
     }
     return state
 }

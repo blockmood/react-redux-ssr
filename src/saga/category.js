@@ -1,7 +1,8 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import fetch from "isomorphic-fetch";
 
-export const fetchUrl = () => fetch( "http://yun.ydma.cn/api/home", {
+
+export const fetchUrl = () => fetch( "http://yun.ydma.cn/api/category-groups/1/categories", {
     method: "get",
     headers: {
         Accept: "application/json",
@@ -15,14 +16,14 @@ export const fetchUrl = () => fetch( "http://yun.ydma.cn/api/home", {
     return response.json();
 } );
 
-export function* fetchGists() {
+export function* catList() {
     try {
         const gists = yield call( fetchUrl );
 
         yield put( {
-            type: 'SUCCESS',
+            type: 'SUCCESS_CAT',
             payload: {
-                gists: gists
+                cateList: gists
             },
         } );
     } catch ( error ) {
@@ -35,5 +36,5 @@ export function* fetchGists() {
 
 
 export default function* () {
-    yield takeLatest( 'REQUEST', fetchGists );
+    yield takeLatest( 'REQUEST_CAT', catList );
 }
