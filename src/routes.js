@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import Home from './components/Home'
 import About from './components/About'
 import List from './components/List'
+import Error from './components/Error'
 
 export default [
     {
@@ -23,6 +24,9 @@ export default [
                 path:'/list',
                 component:List,
                 loadData: List.loadData
+            },
+            {
+                component:Error
             }
         ]
     }
