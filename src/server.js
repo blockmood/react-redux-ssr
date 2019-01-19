@@ -38,9 +38,7 @@ app.get( "/*",(req,res)=>{
             res.writeHead( 200, { "Content-Type": "text/html" } );
             res.end(template)
         })
-
         response.length > 0 ? store.dispatch(response[0]) : store.dispatch({type:'INITIALISE_APP'});
-
         store.close();
     }).catch(error => {
         //rediection 404 ...
