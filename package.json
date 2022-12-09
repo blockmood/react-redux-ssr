@@ -34,7 +34,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.0-beta.0",
     "connected-react-router": "^6.2.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
     "react": "^16.7.0",
